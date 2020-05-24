@@ -1,6 +1,6 @@
 # Name of the Distro to build (full name, without special characters)
   DISTRONAME="Lakka"
-  LIBREELEC_VERSION="23MAY2020"
+  LIBREELEC_VERSION="unoffical"
   OS_VERSION="2.2"
 
 # short project description
