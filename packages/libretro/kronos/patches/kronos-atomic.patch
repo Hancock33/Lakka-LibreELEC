@@ -1,0 +1,12 @@
+diff -ur kronos-0a12e69.old/yabause/src/libretro/Makefile kronos-0a12e69/yabause/src/libretro/Makefile
+--- kronos-0a12e69.old/yabause/src/libretro/Makefile	2020-05-23 14:53:07.000000000 +0000
++++ kronos-0a12e69/yabause/src/libretro/Makefile	2020-05-23 15:46:41.471556981 +0000
+@@ -292,7 +292,7 @@
+ 
+ OBJECTS += $(OBJECTS_C) $(OBJECTS_CXX) $(OBJECTS_S)
+ 
+-LDFLAGS += $(fpic) $(SHARED) -latomic
++LDFLAGS += $(fpic) $(SHARED) 
+ FLAGS += $(fpic)
+ 
+ INCFLAGS := $(foreach dir,$(INCLUDE_DIRS),-I$(dir))

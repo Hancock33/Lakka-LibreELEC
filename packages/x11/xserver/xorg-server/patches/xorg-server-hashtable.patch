@@ -1,0 +1,79 @@
+diff -ur xorg-server-1.20.8.old/hw/xfree86/Makefile.am xorg-server-1.20.8/hw/xfree86/Makefile.am
+--- xorg-server-1.20.8.old/hw/xfree86/Makefile.am	2020-03-29 20:21:15.000000000 +0000
++++ xorg-server-1.20.8/hw/xfree86/Makefile.am	2020-05-23 11:50:42.481221628 +0000
+@@ -78,6 +78,7 @@
+ 	    $(top_builddir)/miext/sync/libsync.la \
+             $(top_builddir)/mi/libmi.la \
+             $(top_builddir)/os/libos.la \
++            $(top_builddir)/Xext/libXext.la \
+ 	    $(top_builddir)/Xext/libXvidmode.la
+ 
+ Xorg_LDADD = \
+diff -ur xorg-server-1.20.8.old/hw/xfree86/Makefile.in xorg-server-1.20.8/hw/xfree86/Makefile.in
+--- xorg-server-1.20.8.old/hw/xfree86/Makefile.in	2020-03-29 20:21:30.000000000 +0000
++++ xorg-server-1.20.8/hw/xfree86/Makefile.in	2020-05-23 11:52:58.658453913 +0000
+@@ -125,7 +125,8 @@
+ 	$(DRI3_LIB) $(GLXVND_LIB) \
+ 	$(top_builddir)/miext/sync/libsync.la \
+ 	$(top_builddir)/mi/libmi.la $(top_builddir)/os/libos.la \
+-	$(top_builddir)/Xext/libXvidmode.la
++	$(top_builddir)/Xext/libXvidmode.la \
++	$(top_builddir)/Xext/libXext.la
+ AM_V_lt = $(am__v_lt_@AM_V@)
+ am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+ am__v_lt_0 = --silent
+@@ -651,6 +652,7 @@
+ 	    $(top_builddir)/miext/sync/libsync.la \
+             $(top_builddir)/mi/libmi.la \
+             $(top_builddir)/os/libos.la \
++	    $(top_builddir)/Xext/libXext.la \
+ 	    $(top_builddir)/Xext/libXvidmode.la
+ 
+ Xorg_LDADD = \
+diff -ur xorg-server-1.20.8.old/Xext/Makefile.am xorg-server-1.20.8/Xext/Makefile.am
+--- xorg-server-1.20.8.old/Xext/Makefile.am	2020-03-29 20:21:15.000000000 +0000
++++ xorg-server-1.20.8/Xext/Makefile.am	2020-05-23 11:17:35.607942324 +0000
+@@ -35,10 +35,8 @@
+ endif
+ 
+ # XResource extension: lets clients get data about per-client resource usage
+-RES_SRCS = hashtable.c hashtable.h xres.c
+-if RES
++RES_SRCS = hashtable.c hashtable.h 
+ BUILTIN_SRCS  += $(RES_SRCS)
+-endif
+ 
+ # MIT ScreenSaver extension
+ SCREENSAVER_SRCS = saver.c
+diff -ur xorg-server-1.20.8.old/Xext/Makefile.in xorg-server-1.20.8/Xext/Makefile.in
+--- xorg-server-1.20.8.old/Xext/Makefile.in	2020-03-29 20:21:29.000000000 +0000
++++ xorg-server-1.20.8/Xext/Makefile.in	2020-05-23 11:18:02.828117383 +0000
+@@ -91,7 +91,7 @@
+ host_triplet = @host@
+ @MITSHM_TRUE@am__append_1 = $(MITSHM_SRCS)
+ @XV_TRUE@am__append_2 = $(XV_SRCS)
+-@RES_TRUE@am__append_3 = $(RES_SRCS)
++am__append_3 = $(RES_SRCS)
+ @SCREENSAVER_TRUE@am__append_4 = $(SCREENSAVER_SRCS)
+ @XINERAMA_TRUE@am__append_5 = $(XINERAMA_SRCS)
+ @XINERAMA_TRUE@@XORG_TRUE@am__append_6 = panoramiXsrv.h panoramiX.h
+@@ -141,8 +141,8 @@
+ @MITSHM_TRUE@am__objects_2 = $(am__objects_1)
+ am__objects_3 = xvmain.lo xvdisp.lo xvmc.lo
+ @XV_TRUE@am__objects_4 = $(am__objects_3)
+-am__objects_5 = hashtable.lo xres.lo
+-@RES_TRUE@am__objects_6 = $(am__objects_5)
++am__objects_5 = hashtable.lo 
++am__objects_6 = $(am__objects_5)
+ am__objects_7 = saver.lo
+ @SCREENSAVER_TRUE@am__objects_8 = $(am__objects_7)
+ am__objects_9 = panoramiX.lo panoramiXprocs.lo panoramiXSwap.lo
+@@ -658,7 +658,7 @@
+ XV_SRCS = xvmain.c xvdisp.c xvmc.c xvdix.h xvmcext.h xvdisp.h
+ 
+ # XResource extension: lets clients get data about per-client resource usage
+-RES_SRCS = hashtable.c hashtable.h xres.c
++RES_SRCS = hashtable.c hashtable.h 
+ 
+ # MIT ScreenSaver extension
+ SCREENSAVER_SRCS = saver.c
