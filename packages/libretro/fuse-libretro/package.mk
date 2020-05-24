@@ -19,9 +19,9 @@
 ################################################################################
 
 PKG_NAME="fuse-libretro"
-PKG_VERSION="43d01de"
+PKG_VERSION="c2f03e6"
 PKG_REV="1"
-PKG_ARCH="i386 x86_64 arm"
+PKG_ARCH="any"
 PKG_LICENSE="GPLv3"
 PKG_SITE="https://github.com/libretro/fuse-libretro"
 PKG_GIT_URL="$PKG_SITE"
@@ -34,8 +34,13 @@ PKG_LONGDESC="A port of the Fuse Unix Spectrum Emulator to libretro "
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
+pre_configure_target() {
+  strip_lto
+}
+
 make_target() {
-  make -f Makefile.libretro
+  CFLAGS="$CFLAGS -DARM_FIX"
+  make -f Makefile.libretro platform=unix
 }
 
 makeinstall_target() {

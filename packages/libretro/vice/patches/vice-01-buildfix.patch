@@ -1,14 +1,14 @@
-diff -Naur vice.git/Makefile.libretro vice.patch/Makefile.libretro
---- vice.git/Makefile.libretro	2018-01-12 09:28:17.665233887 -0600
-+++ vice.patch/Makefile.libretro	2018-01-12 09:28:58.080739881 -0600
-@@ -255,8 +255,8 @@
+diff -Naur vice-0e85078.old/Makefile vice-0e85078/Makefile
+--- vice-0e85078.old/Makefile	2020-05-16 15:35:03.000000000 +0000
++++ vice-0e85078/Makefile	2020-05-16 15:50:18.583317980 +0000
+@@ -403,8 +403,8 @@
  %.o: %.cpp
  	$(CXX) $(CXXFLAGS) -c $^ -o $@
  
 -%.o: %.cc
--	$(CC) $(CFLAGS) -c $^ -o $@
+-	$(CXX) $(CXXFLAGS) -c $^ -o $@
 +#%.o: %.cc
-+#	$(CC) $(CFLAGS) -c $^ -o $@
++#	$(CXX) $(CXXFLAGS) -c $^ -o $@
  
  clean:
  	rm -f $(OBJECTS) $(TARGET)

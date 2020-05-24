@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="openlara"
-PKG_VERSION="2086fd8"
+PKG_VERSION="c7fd002"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="BSD"

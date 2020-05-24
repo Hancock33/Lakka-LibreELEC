@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="xinput"
-PKG_VERSION="1.6.2"
+PKG_VERSION="1.6.3"
 PKG_URL="https://www.x.org/archive/individual/app/$PKG_NAME-$PKG_VERSION.tar.bz2"
 PKG_SHORTDESC="xinput is a small commandline tool to configure devices."
 PKG_ARCH="any"

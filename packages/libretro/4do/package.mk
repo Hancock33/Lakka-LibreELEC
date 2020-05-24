@@ -19,7 +19,7 @@
 ################################################################################
 
 PKG_NAME="4do"
-PKG_VERSION="e2ba1eb"
+PKG_VERSION="d7d2193"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="LGPL with additional notes"
@@ -40,5 +40,5 @@ make_target() {
 
 makeinstall_target() {
   mkdir -p $INSTALL/usr/lib/libretro
-  cp 4do_libretro.so $INSTALL/usr/lib/libretro/
+  cp opera_libretro.so $INSTALL/usr/lib/libretro/
 }

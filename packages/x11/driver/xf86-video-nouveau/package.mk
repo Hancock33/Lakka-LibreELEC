@@ -1,5 +1,5 @@
 PKG_NAME="xf86-video-nouveau"
-PKG_VERSION="1.0.15"
+PKG_VERSION="1.0.16"
 PKG_ARCH="any"
 PKG_SECTION="x11/driver"
 PKG_LICENSE="OSS"

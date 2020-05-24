@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2012-2013, NVIDIA CORPORATION.  All rights reserved.
+# Copyright (c) 2012-2019, NVIDIA CORPORATION.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -64,25 +64,6 @@ function usage_bug_report_message {
 	echo "or by sending email to 'linux-tegra-bugs@nvidia.com'."
 }
 
-function add_file_info_to_log {
-        FILE_LIST=("/proc/cpuinfo" "/proc/interrupts" "/proc/meminfo" \
-                        "/proc/modules" "/proc/iomem" "/proc/partitions" \
-                        "/proc/vmstat" "/sys/kernel/debug/clock/clock_tree" \
-                        "/sys/kernel/debug/tegra_dma" \
-                        "/sys/kernel/debug/tegra_gpio" "/sys/kernel/debug/tegra_pinmux" \
-                         "/sys/kernel/debug/tegra_pinmux_drive" )
-
-        for file in "${FILE_LIST[@]}"
-        do
-                if [ -e "${file}" ]; then
-                        echo "____________________________________________"                    \
-                                >> ${LOG_FILE_LOCATION}
-                        echo "='${file}' information=" >> ${LOG_FILE_LOCATION}
-                        addtosysteminfotxt "$(cat ${file})"
-                fi
-        done
-}
-
 # show the usages text
 function usage {
 	echo "Use: $SCRIPT_NAME [--extended-info|-e] [--output-file|-o] [--help|-h]"
@@ -138,9 +119,6 @@ if [ `id -u` -ne 0 ]; then
 	echo "ERROR: Please run ${SCRIPT_NAME} as root."
 	exit 1
 fi
-
-# now that we now we are root user, we can access this
-CPUIDLE_LIST=$(ls /sys/kernel/debug/cpuidle)
 
 # move any old log file out of the way
 if [ -f "${LOG_FILE_LOCATION}" ]; then
@@ -264,7 +242,24 @@ if [ ! -x "${LSUSB}" ] ; then
 else
 	echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
 	echo "='lsusb' information=" >> ${LOG_FILE_LOCATION}
-	addtosysteminfotxt "$(lsusb)"
+	addtosysteminfotxt "$(lsusb -v)"
+fi
+
+LSPCI=`which lspci || true`
+if [ ! -x "${LSPCI}" ] ; then
+	echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+	echo "You may wish to install lspci for detailed PCI log information." | tee -a ${LOG_FILE_LOCATION}
+	if [ "${DISTRIBUTION_NAME}" = "Ubuntu" ] ; then
+		echo "This can be done by running the following line:" | tee -a ${LOG_FILE_LOCATION}
+		echo "sudo apt-get install pciutils" | tee -a ${LOG_FILE_LOCATION}
+	fi
+
+	echo "" >> ${LOG_FILE_LOCATION} | tee -a ${LOG_FILE_LOCATION}
+	echo "" >> ${LOG_FILE_LOCATION} | tee -a ${LOG_FILE_LOCATION}
+else
+	echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+	echo "='lspci -vvv' information=" >> ${LOG_FILE_LOCATION}
+	addtosysteminfotxt "$(lspci -vvv)"
 fi
 
 echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
@@ -285,9 +280,37 @@ if [ -e "/etc/nv_tegra_release" ] ; then
 	echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
 	echo "=NVIDIA L4T /etc/nv_tegra_release Validation check=" >> ${LOG_FILE_LOCATION}
 	addtosysteminfotxt "$(sha1sum -c /etc/nv_tegra_release 2> /dev/null)"
+else
+	dpkg -s nvidia-l4t-core &> /dev/null
+	if [ $? -eq 0 ]; then
+		BSP_VERSION=$(dpkg -s nvidia-l4t-core|grep "^Version:"|tr -d ' '|cut -d ':' -f 2)
+		echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+		echo "=NVIDIA L4T BSP version information=" >> ${LOG_FILE_LOCATION}
+		addtosysteminfotxt "${BSP_VERSION}"
+	fi
 fi
 
-add_file_info_to_log
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/cpuinfo' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/cpuinfo)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/interrupts' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/interrupts)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/meminfo' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/meminfo)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/modules' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/modules)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/iomem' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/iomem)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/partitions' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/partitions)"
+echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
+echo "='/proc/vmstat' information=" >> ${LOG_FILE_LOCATION}
+addtosysteminfotxt "$(cat /proc/vmstat)"
 
 echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
 echo "='ls -lah /sys/bus/i2c/devices/' information=" >> ${LOG_FILE_LOCATION}
@@ -301,10 +324,31 @@ echo "____________________________________________"                    >> ${LOG_
 echo "='lsmod' information=" >> ${LOG_FILE_LOCATION}
 addtosysteminfotxt "$(lsmod)"
 
+files=()
+files+=('/sys/kernel/debug/clock/clock_tree')
+files+=('/sys/kernel/debug/clk/clk_summary')
+files+=('/sys/kernel/debug/gpio')
+files+=('/sys/kernel/debug/tegra_dma')
+files+=('/sys/kernel/debug/tegra_gpio')
+files+=('/sys/kernel/debug/tegra-gpio-aon')
+files+=('/sys/kernel/debug/tegra_pinmux')
+files+=('/sys/kernel/debug/tegra_pinmux_drive')
+files+=('/sys/kernel/debug/tegra_pinctrl_reg')
+
+for file in ${files[@]}; do
+	if [ -f "${file}" ]; then
+		echo "____________________________________________"            >> ${LOG_FILE_LOCATION}
+		echo "='cat ${file}' information="                             >> ${LOG_FILE_LOCATION}
+		addtosysteminfotxt "$(cat ${file})"
+	fi
+done
+
+# now that we now we are root user, we can access this
+CPUIDLE_LIST="$(find /sys/kernel/debug/*cpuidle*/ -perm /444 -type f)"
 for i in ${CPUIDLE_LIST} ; do
 	echo "____________________________________________"                    >> ${LOG_FILE_LOCATION}
-	echo "='/sys/kernel/debug/cpuidle/$i' information=" >> ${LOG_FILE_LOCATION}
-	addtosysteminfotxt "$(cat /sys/kernel/debug/cpuidle/$i)"
+	echo "='$i' information=" >> ${LOG_FILE_LOCATION}
+	addtosysteminfotxt "$(cat $i)"
 done
 
 # go through the list of distro version/release information

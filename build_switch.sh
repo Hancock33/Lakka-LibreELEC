@@ -16,7 +16,7 @@ fi
 
 build_target() {
   cd "$PROJECT_DIR"
-  make image MAKEFLAGS=-j18
+  make image MAKEFLAGS=-j32
 }
 
 LOGFILE="$(mktemp)"

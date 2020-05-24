@@ -1,21 +1,25 @@
-diff --git a/Makefile b/Makefile
-index db13ab8e..7d1cec95 100644
---- a/Makefile
-+++ b/Makefile
-@@ -22,24 +22,16 @@ HAVE_CLANG    := 0
- TARGET_NAME   := reicast
+diff -Naur flycast-6544c9f.old/Makefile flycast-6544c9f/Makefile
+--- flycast-6544c9f.old/Makefile	2020-03-28 14:41:35.000000000 +0000
++++ flycast-6544c9f/Makefile	2020-03-29 13:45:36.635610135 +0000
+@@ -26,28 +26,20 @@
+ TARGET_NAME   := flycast
  
  ifeq ($(HAVE_CLANG),1)
 -	CXX      = ${CC_PREFIX}clang++
 -	CC       = ${CC_PREFIX}clang
  	SHARED   := -fuse-ld=lld
  else
--	CXX      = ${CC_PREFIX}g++
--	CC       = ${CC_PREFIX}gcc
+-	CXX      ?= ${CC_PREFIX}g++
+-	CC       ?= ${CC_PREFIX}gcc
  	SHARED   :=
  endif
--CC_AS    = ${CC_PREFIX}as
+ ifeq ($(HAVE_LTCG),1)
+ 	SHARED   += -flto
+ endif
  
+-CC_AS    ?= ${CC_PREFIX}as
+-
++CC_AS     = ${CC_PREFIX}${CC}
  MFLAGS   := 
  ASFLAGS  := 
 -LDFLAGS  :=
@@ -27,8 +31,7 @@ index db13ab8e..7d1cec95 100644
  
  GIT_VERSION := " $(shell git rev-parse --short HEAD || echo unknown)"
  ifneq ($(GIT_VERSION)," unknown")
-@@ -856,8 +870,8 @@ CXXFLAGS       += $(CORE_DEFINES)
- 
+@@ -1062,7 +1054,7 @@
  PREFIX        ?= /usr/local
  
  ifneq (,$(findstring arm, $(ARCH)))
@@ -36,4 +39,3 @@ index db13ab8e..7d1cec95 100644
 +	CC_AS    = ${CC_PREFIX}${CC} #The ngen_arm.S must be compiled with gcc, not as
  	ASFLAGS  += $(CFLAGS)
  endif
- 

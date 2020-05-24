@@ -17,11 +17,11 @@
 ################################################################################
 
 PKG_NAME="xcb-proto"
-PKG_VERSION="1.12"
+PKG_VERSION="1.14"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://www.X.org"
-PKG_URL="http://xcb.freedesktop.org/dist/$PKG_NAME-$PKG_VERSION.tar.bz2"
+PKG_URL="http://xcb.freedesktop.org/dist/$PKG_NAME-$PKG_VERSION.tar.gz"
 PKG_DEPENDS_TARGET="toolchain util-macros Python:host"
 PKG_SECTION="x11/proto"
 PKG_SHORTDESC="xcb-proto: X C-language Bindings protocol headers"

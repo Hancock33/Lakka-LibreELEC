@@ -19,9 +19,9 @@
 ################################################################################
 
 PKG_NAME="flycast"
-PKG_VERSION="4a020d4"
+PKG_VERSION="3d1462d"
 PKG_REV="1"
-PKG_ARCH="arm i386 x86_64 aarch64"
+PKG_ARCH="any"
 PKG_LICENSE="GPLv2"
 PKG_SITE="https://github.com/libretro/flycast"
 PKG_GIT_URL="$PKG_SITE"
